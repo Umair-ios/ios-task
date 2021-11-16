@@ -81,7 +81,19 @@ class ListingDataSource: NSObject, UICollectionViewDataSource, UICollectionViewD
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout,
                         sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: collectionView.frame.size.width, height: 450)
+        let campaign = campaigns[indexPath.item]
+        let width = UIScreen.main.bounds.width
+        let imageHeight = width / 1.33 // height calculated according to the 4:3
+        let nameLabelHeight = getHeightForLabel(text: campaign.name, width: width - 16, font: UIFont(name: "HelveticaNeue-Bold", size: 17) ?? .systemFont(ofSize: 17)) // as there is padding so we did - 16
+        let descriptionLabelHeight = getHeightForLabel(text: campaign.description, width: width - 16, font: UIFont(name: "HoeflerText-Regular", size: 12) ?? .systemFont(ofSize: 12)) // as there is padding so we did - 16
+        return CGSize(width: collectionView.frame.size.width, height: imageHeight + nameLabelHeight + descriptionLabelHeight + 8) // as we have spacing between label and image so we added 8
+    }
+    
+    private func getHeightForLabel(text: String, width: CGFloat, font: UIFont) -> CGFloat {
+        let constraintRect = CGSize(width: width, height: .greatestFiniteMagnitude)
+        let boundingBox = text.boundingRect(with: constraintRect, options: .usesLineFragmentOrigin, context: nil)
+        
+        return ceil(boundingBox.height)
     }
 
 }
